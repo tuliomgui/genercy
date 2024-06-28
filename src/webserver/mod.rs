@@ -1,8 +1,9 @@
-use std::sync::{Arc, Mutex};
+use std::fmt::Error;
+use std::sync::{Mutex, OnceLock};
 use axum::extract::ws::{Message, WebSocket};
 use axum::response::{Html, Response};
 use axum::{Form, Json, Router};
-use axum::extract::{State, WebSocketUpgrade};
+use axum::extract::{WebSocketUpgrade};
 use axum::routing::{get, post};
 use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};
@@ -15,6 +16,8 @@ mod templater;
 mod error;
 
 use templater::Templates;
+
+static CONNECTED_CLIENTS: OnceLock<ServerState> = OnceLock::new();
 
 #[derive(Debug, Serialize, Deserialize)]
 struct ClientData {
@@ -34,15 +37,21 @@ pub struct ServerState {
 pub struct MyServer;
 
 impl MyServer {
-    pub async fn run(server_state: Arc<ServerState>) {
+    pub async fn run() {
         println!("Initializing...");
+        if let None = CONNECTED_CLIENTS.get() {
+            if let Err(_) = CONNECTED_CLIENTS.set(ServerState { sender: Mutex::new(vec![]) }) {
+                panic!("Error trying to start the server. The list of the connected clients could not be initialized properly.");
+            }
+        };
+        //let server_state =
         let app = Router::new()
             .route("/", get(MyServer::index))
             .route("/hello", get(MyServer::hello_world))
             .route("/form", post(MyServer::form_test))
             .route("/ws", get(MyServer::ws_handler))
-            .nest_service("/static", ServeDir::new("static"))
-            .with_state(server_state);
+            .nest_service("/static", ServeDir::new("static"));
+            //.with_state(server_state);
 
         let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
         axum::serve(listener, app).await.unwrap();
@@ -72,15 +81,15 @@ impl MyServer {
         let return_msg = ResponseMessage{message: String::from(msg)};
         Json(json!(return_msg))
     }
-    async fn ws_handler(ws: WebSocketUpgrade, State(curr_state): State<Arc<ServerState>>) -> Response {
+    async fn ws_handler(ws: WebSocketUpgrade) -> Response {
         println!("New client connected.");
-        ws.on_upgrade(|socket| MyServer::handle_socket(socket, curr_state))
+        ws.on_upgrade(|socket| MyServer::handle_socket(socket))
     }
 
-    async fn handle_socket(socket: WebSocket, state: Arc<ServerState>) {
+    async fn handle_socket(socket: WebSocket) {
         let (sender, receiver) = socket.split();
         {
-            let mut vec_sender = state.sender.lock().unwrap();
+            let mut vec_sender = CONNECTED_CLIENTS.get().unwrap().sender.lock().unwrap();
             vec_sender.push(sender);
         }
         tokio::spawn(MyServer::read(receiver));
@@ -89,13 +98,14 @@ impl MyServer {
     async fn read(mut receiver: SplitStream<WebSocket>) {
         while let Some(res) = receiver.next().await {
             match res {
-                Ok(msg) => { Self::process_message(msg); },
+                Ok(msg) => { Self::process_message(msg, &receiver); },
                 Err(error) => { println!("Ocorreu um erro: {:?}", error); }
             }
+            //receiver.
         }
     }
 
-    fn process_message(message: Message) {
+    fn process_message(message: Message, receiver: &SplitStream<WebSocket>) {
         match message {
             Message::Text(text) => {
                 println!("Received message: {text}");
@@ -111,15 +121,26 @@ impl MyServer {
             },
             Message::Close(_close) => {
                 println!("Client closed the connection.");
+                Self::remove_disconnected_client(receiver);
             }
         }
     }
 
-    pub async fn write(server_state: &Arc<ServerState>, message: &String) {
-        for sender in server_state.sender.lock().unwrap().iter_mut() {
-            if sender.send(Message::Text(message.clone())).await.is_err() {
-                println!("Client disconnected");
+    fn remove_disconnected_client(receiver: &SplitStream<WebSocket>) {
+        let mut available_clients = CONNECTED_CLIENTS.get().unwrap().sender.lock().unwrap();
+        available_clients.retain(|client| !client.is_pair_of(receiver));
+    }
+
+    pub async fn write(message: &String) -> Result<(), Error> {
+        {
+            let mut x = CONNECTED_CLIENTS.get().unwrap().sender.lock().unwrap();
+            // Broadcast message to all connected clients
+            for sender in x.iter_mut() {
+                if sender.send(Message::Text(message.clone())).await.is_err() {
+                    println!("Client is disconnected");
+                }
             }
         }
+        Ok(())
     }
 }
