@@ -4,14 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-actix = "0.13.5"
-actix-files = "0.6.6"
-actix-web = "4.7.0"
-actix-web-actors = "4.3.0"
 axum = { version = "0.7.5", features = ["ws"] }
-axum-extra = { version = "0.9.3", features = ["typed-header"] }
 futures-util = "0.3.30"
 serde = { version = "1.0.203", features = ["derive"] }
 serde_json = "1.0.117"
+sqlx = { version = "0.7.4", features = ["runtime-tokio", "tls-native-tls", "sqlite"] }
+tera = { version = "1.20.0", default-features = false }
 tokio = { version = "1.38.0", features = ["macros", "rt-multi-thread"] }
 tower-http = { version = "0.5.2", features = ["fs"] }

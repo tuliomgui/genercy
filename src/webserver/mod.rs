@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use axum::extract::ws::{Message, WebSocket};
 use axum::response::{Html, Response};
@@ -9,6 +8,7 @@ use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use tera::Context;
 use tower_http::services::ServeDir;
 
 mod templater;
@@ -49,9 +49,10 @@ impl MyServer {
     }
 
     async fn index() -> Html<String> {
-        let templater = Templates::new();
-        let content = Templates::mount_template(templater.get("index.html").unwrap(), &HashMap::new()).unwrap();
-        Html(content)
+        let templater = Templates::get_templater();
+        let context = Context::new();
+        let result_str = templater.render("tera_index.html", &context).unwrap();
+        Html(result_str)
     }
 
     async fn hello_world(axum::extract::Json(body_data): axum::extract::Json<ClientData>) -> Json<Value> {
