@@ -5,5 +5,35 @@
     <link rel="stylesheet" href="/static/style.css">
 {% endblock head %}
 {% block content_header -%}
-    <h1>This app is under construction. Please come back later.</h1>
+    <h1>Containers list</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Source image</th>
+                <th>Creation date</th>
+                <th>State</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for container in containers %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{container["ID"]}}</td>
+                <td>{{container["Names"]}}</td>
+                <td>{{container["Image"]}}</td>
+                <td>{{container["CreatedAt"]}}</td>
+                <td>
+                    {% if container["State"] == "running" %}
+                        <img src="static/images/robot_green.svg" width="30" height="30" />
+                    {% else %}
+                        <img src="static/images/robot_red.svg" width="30" height="30" />
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock content_header %}

@@ -1,3 +1,5 @@
 html, body { background-color: #333; color: #DDD; }
-html { border: 0; height: 100vh; display: flex; align-items: center; justify-content: center; }
-body { border: 0; }
+
+table { border: 1px solid #000; width: 100%; border-collapse: collapse; }
+th { background-color: #444; color: #669 }
+th, td { border: 1px solid #000; padding: 3px 15px; }

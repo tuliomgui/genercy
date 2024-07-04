@@ -14,6 +14,7 @@ use tower_http::services::ServeDir;
 
 mod templater;
 mod error;
+use crate::container_com::{CommandStruct, ContainerCommand, DockerListRunningContainers};
 
 use templater::Templates;
 
@@ -59,7 +60,9 @@ impl MyServer {
 
     async fn index() -> Html<String> {
         let templater = Templates::get_templater();
-        let context = Context::new();
+        let mut context = Context::new();
+        let x = DockerListRunningContainers::execute().unwrap();
+        context.insert("containers", &x.output);
         let result_str = templater.render("tera_index.html", &context).unwrap();
         Html(result_str)
     }
