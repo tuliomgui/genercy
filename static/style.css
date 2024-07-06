@@ -1,4 +1,48 @@
-html, body { background-color: #333; color: #DDD; }
+* { padding: 0; margin: 0; }
+:root {
+    --html-background-color: #333;
+    --body-background-color: #333;
+    --base-text-color: #DDD;
+    --header-background-color: #1E1E1E;
+    --left-siderbar-background-color: #444;
+    --left-siderbar-menu-background-color: #1E1E1E;
+}
+html {
+    background-color: var(--html-background-color);
+    color: var(--base-text-color);
+    display: flex;
+    justify-content: center;
+}
+body {
+    background-color: var(--body-background-color);
+    color: var(--base-text-color);
+    display: grid;
+    width: 1024px;
+}
+
+section {  }
+
+#header {
+    background-color: var(--header-background-color);
+    padding: 1em 2em;
+}
+#main {
+    display:  flex;
+}
+#left-sidebar {
+    background-color: var(--left-siderbar-background-color);
+    padding: 0 0;
+    flex: 0.5;
+}
+#content {
+    padding: 1em 2em;
+    flex: auto;
+}
+#left-sidebar-menu {
+    background-color: var(--left-siderbar-menu-background-color);
+    padding: 1em 2em;
+}
+#footer { padding: 1em 2em; }
 
 table { border: 1px solid #000; width: 100%; border-collapse: collapse; }
 th { background-color: #444; color: #669 }

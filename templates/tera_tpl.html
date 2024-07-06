@@ -7,6 +7,23 @@
     {% endblock head -%}
 </head>
 <body>
-    {% block content_header -%}{% endblock content_header -%}
+<section id="header">
+    <p>Header goes here</p>
+</section>
+<section id="main">
+    <section id="left-sidebar">
+        <ul id="left-sidebar-menu">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+    </section>
+    <section id="content">
+        {% block content -%}{% endblock content -%}
+    </section>
+</section>
+<section id="footer">
+    Footer goes here
+</section>
 </body>
 </html>
