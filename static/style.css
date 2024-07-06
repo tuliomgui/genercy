@@ -17,7 +17,12 @@ body {
     background-color: var(--body-background-color);
     color: var(--base-text-color);
     display: grid;
-    grid-template-columns: repeat(9 ,1fr);
+    grid-template-rows: repeat(3, auto);
+    grid-template-columns: 1fr 3fr;
+    grid-template-areas:
+        'header header'
+        'left content'
+        'footer footer';
     width: 1024px;
 }
 
@@ -26,7 +31,7 @@ section {  }
 #header {
     background-color: var(--header-background-color);
     padding: 1em 2em;
-    grid-column: 1 / 10;
+    grid-area: header;
 }
 #main {
     display:  flex;
@@ -34,18 +39,18 @@ section {  }
 #left-sidebar {
     background-color: var(--left-siderbar-background-color);
     padding: 0 0;
-    grid-column: 1 / 3;
+    grid-area: left;
 }
 #content {
     padding: 1em 2em;
     flex: auto;
-    grid-column: 3 / 10;
+    grid-area: content;
 }
 #left-sidebar-menu {
     background-color: var(--left-siderbar-menu-background-color);
     padding: 1em 2em;
 }
-#footer { padding: 1em 2em; grid-column: 1 / 10; }
+#footer { padding: 1em 2em; rid-area: footer }
 
 table { border: 1px solid #000; border-collapse: collapse; }
 th { background-color: #444; color: #669 }
