@@ -1,9 +1,5 @@
 {% extends "tera_tpl.html" -%}
 {% block title -%}Genercy - Container Management App{% endblock title %}
-{% block head -%}
-    {{ super() -}}
-    <link rel="stylesheet" href="/static/style.css">
-{% endblock head %}
 {% block content -%}
     <h1>Containers list</h1>
     <table>
@@ -15,6 +11,7 @@
                 <th>Source image</th>
                 <th>Creation date</th>
                 <th>State</th>
+                <th>Control</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +27,13 @@
                         <img src="static/images/robot_green.svg" width="30" height="30" />
                     {% else %}
                         <img src="static/images/robot_red.svg" width="30" height="30" />
+                    {% endif %}
+                </td>
+                <td>
+                    {% if container["State"] == "running" %}
+                        {% extends "container_start_button.html" -%}
+                    {% else %}
+                        {% extends "container_start_button.html" -%}
                     {% endif %}
                 </td>
             </tr>

@@ -1,20 +1,22 @@
 use std::fmt::Error;
 use std::sync::{Mutex, OnceLock};
 use axum::extract::ws::{Message, WebSocket};
-use axum::response::{Html, Response};
+use axum::response::{Html, IntoResponse, Response};
 use axum::{Form, Json, Router};
-use axum::extract::{WebSocketUpgrade};
+use axum::extract::{Path, WebSocketUpgrade};
 use axum::routing::{get, post};
+use axum::http::StatusCode;
 use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tera::Context;
+//use tower_http::classify::ServerErrorsFailureClass::StatusCode;
 use tower_http::services::ServeDir;
 
 mod templater;
 mod error;
-use crate::container_com::{CommandStruct, ContainerCommand, DockerListRunningContainers};
+use crate::container_com::*;
 
 use templater::Templates;
 
@@ -51,6 +53,7 @@ impl MyServer {
             .route("/hello", get(MyServer::hello_world))
             .route("/form", post(MyServer::form_test))
             .route("/ws", get(MyServer::ws_handler))
+            .route("/container/:id/:action", get(MyServer::container_action_handler))
             .nest_service("/static", ServeDir::new("static"));
             //.with_state(server_state);
 
@@ -58,10 +61,26 @@ impl MyServer {
         axum::serve(listener, app).await.unwrap();
     }
 
+    async fn container_action_handler(Path((id, action)): Path<(String, String)>) -> impl IntoResponse {
+        if action == "start" {
+            match DockerStartContainers::execute(vec![id]) {
+                Ok(x) => return (StatusCode::OK, Html("")),
+                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error[..]))
+            }
+        } else if action == "stop" {
+            match DockerStopContainers::execute(vec![id]) {
+                Ok(x) => return (StatusCode::OK, Html("")),
+                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error[..]))
+            }
+        } else {
+            return (StatusCode::BAD_REQUEST, Html("Invalid action name"));
+        }
+    }
+
     async fn index() -> Html<String> {
         let templater = Templates::get_templater();
         let mut context = Context::new();
-        let x = DockerListRunningContainers::execute().unwrap();
+        let x = DockerListAllContainers::execute(vec![]).unwrap();
         context.insert("containers", &x.output);
         let result_str = templater.render("tera_index.html", &context).unwrap();
         Html(result_str)

@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::process::{Command, ExitStatus};
+use std::process::{Command, ExitStatus, Output};
 use serde_json::{json, Value};
 
 #[derive(Debug)]
@@ -25,23 +25,27 @@ impl CommandStruct {
 
 pub trait ContainerCommand {
 
-    fn execute() -> Result<CommandStruct, String>;
+    fn execute(args: Vec<String>) -> Result<CommandStruct, String>;
 
+    fn execute_os_command(command_struct: &CommandStruct) -> Result<Output, String> {
+        Command::new(command_struct.command.clone())
+            .args(command_struct.args.clone())
+            .output().map_err(|err| format!("Unexpected error: {}", err))
+    }
 }
 
-pub struct DockerListRunningContainers;
+pub struct DockerListAllContainers;
 
-impl ContainerCommand for DockerListRunningContainers {
+impl ContainerCommand for DockerListAllContainers {
     // const COMMAND_NAME: String = String::from("");
     // const COMMAND_ARGS: Vec<String> = vec![String::from("ps"), String::from("--format"), String::from("json")];
 
-    fn execute() -> Result<CommandStruct, String> {
+    fn execute(_: Vec<String>) -> Result<CommandStruct, String> {
         let command_name = String::from("docker");
         let command_args = vec![String::from("ps"), String::from("--all"), String::from("--format"), String::from("json")];
         let mut command_struct = CommandStruct::new(command_name, command_args);
-        let command_result = Command::new(command_struct.command.clone()).args(command_struct.args.clone()).output().map_err(|err| format!("Unexpected error: {}", err))?;
-
-        if !command_result.status.success() {
+        let command_result = Self::execute_os_command(&command_struct)?;
+            if !command_result.status.success() {
             return Err(String::from_utf8(command_result.stderr).unwrap());
         }
 
@@ -65,7 +69,45 @@ impl ContainerCommand for DockerListRunningContainers {
     }
 }
 
-struct DockerListAllContainers;
+pub struct DockerStartContainers;
+
+impl ContainerCommand for DockerStartContainers {
+    fn execute(args: Vec<String>) -> Result<CommandStruct, String> {
+        if args.len() != 1 {
+            return Err(format!("Expected 1 argument, got {}", args.len()));
+        }
+        let command_name = String::from("docker");
+        let command_args = vec![String::from("container"), String::from("start"), args[0].clone()];
+        let mut command_struct = CommandStruct::new(command_name, command_args);
+        let command_result = Self::execute_os_command(&command_struct)?;
+        if !command_result.status.success() {
+            return Err(String::from_utf8(command_result.stderr).unwrap());
+        }
+        command_struct.is_ok = command_result.status.success();
+        command_struct.exit_code = command_result.status.code().unwrap();
+        Ok(command_struct)
+    }
+}
+
+pub struct DockerStopContainers;
+
+impl ContainerCommand for crate::container_com::DockerStopContainers {
+    fn execute(args: Vec<String>) -> Result<CommandStruct, String> {
+        if args.len() != 1 {
+            return Err(format!("Expected 1 argument, got {}", args.len()));
+        }
+        let command_name = String::from("docker");
+        let command_args = vec![String::from("container"), String::from("stop"), args[0].clone()];
+        let mut command_struct = CommandStruct::new(command_name, command_args);
+        let command_result = Self::execute_os_command(&command_struct)?;
+        if !command_result.status.success() {
+            return Err(String::from_utf8(command_result.stderr).unwrap());
+        }
+        command_struct.is_ok = command_result.status.success();
+        command_struct.exit_code = command_result.status.code().unwrap();
+        Ok(command_struct)
+    }
+}
 
 #[cfg(test)]
 mod testes {
@@ -73,7 +115,7 @@ mod testes {
 
     #[test]
     fn test_first() {
-        let _t = DockerListRunningContainers::execute().unwrap();
+        let _t = DockerListAllContainers::execute().unwrap();
         println!("Size is: {}", _t.output.len());
         assert!(true);
     }
