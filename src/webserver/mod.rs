@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::Error;
 use std::sync::{Mutex, OnceLock};
 use axum::extract::ws::{Message, WebSocket};
@@ -62,18 +63,20 @@ impl MyServer {
     }
 
     async fn container_action_handler(Path((id, action)): Path<(String, String)>) -> impl IntoResponse {
+        let mut context = Context::new();
+        context.insert("container", &HashMap::from([("ID", &id)]));
         if action == "start" {
             match DockerStartContainers::execute(vec![id]) {
-                Ok(x) => return (StatusCode::OK, Html("")),
-                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error[..]))
+                Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
+                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
             }
         } else if action == "stop" {
             match DockerStopContainers::execute(vec![id]) {
-                Ok(x) => return (StatusCode::OK, Html("")),
-                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error[..]))
+                Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
+                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
             }
         } else {
-            return (StatusCode::BAD_REQUEST, Html("Invalid action name"));
+            return (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name")));
         }
     }
 
