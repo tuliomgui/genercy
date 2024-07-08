@@ -24,18 +24,18 @@
                 <td>{{container["CreatedAt"]}}</td>
                 <td>
                     {% if container["State"] == "running" %}
-                        <img src="static/images/robot_green.svg" width="30" height="30" />
+                        <img src="static/images/robot_green.svg" width="30" height="30" id='status-img-{{container["ID"]}}' />
                     {% else %}
-                        <img src="static/images/robot_red.svg" width="30" height="30" />
+                        <img src="static/images/robot_red.svg" width="30" height="30" id='status-img-{{container["ID"]}}' />
                     {% endif %}
                 </td>
-                <td>
+                <td data-container-id='{{container["ID"]}}' data-hx-on::after-request="updateContainerStatus(event)">
                     {% if container["State"] == "running" %}
                         {% include "container_stop_button.html" -%}
                     {% else %}
                         {% include "container_start_button.html" -%}
                     {% endif %}
-                    <img src="static/images/spinning-dots.svg" width="23px" height="23px" class="htmx-indicator" id='{{container["ID"]}}-indicator' />
+                    <img src="static/images/spinning-dots.svg" width="23px" height="23px" class="htmx-indicator" id='indicator-{{container["ID"]}}' />
                 </td>
             </tr>
         {% endfor %}
