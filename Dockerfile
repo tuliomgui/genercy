@@ -1,11 +1,15 @@
 FROM rust:alpine3.20
 LABEL authors="tulio"
+RUN apk add --no-cache shadow
 RUN apk update && apk upgrade #new
 RUN apk add musl-dev libressl-dev pkgconfig #new
 WORKDIR /opt/genercy
-ADD https://github.com/tuliomgui/genercy.git .
-RUN cargo build
-RUN cp target/debug/genercy .
-RUN rm -rf target
+RUN groupadd -g 1000 tulio && \
+    useradd -u 1000 -g 1000 -m tulio
+USER tulio
+# ADD . .
+# RUN cargo build
+# RUN cp target/debug/genercy .
+# RUN rm -rf target
 
-CMD ["./genercy"]
+CMD [""]
