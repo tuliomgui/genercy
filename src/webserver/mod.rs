@@ -55,28 +55,45 @@ impl MyServer {
             .route("/form", post(MyServer::form_test))
             .route("/ws", get(MyServer::ws_handler))
             .route("/container/:id/:action", get(MyServer::container_action_handler))
+            .route("/images", get(MyServer::images))
             .nest_service("/static", ServeDir::new("static"));
             //.with_state(server_state);
-
         let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+        println!("Server is running...");
         axum::serve(listener, app).await.unwrap();
     }
 
     async fn container_action_handler(Path((id, action)): Path<(String, String)>) -> impl IntoResponse {
         let mut context = Context::new();
         context.insert("container", &HashMap::from([("ID", &id)]));
-        if action == "start" {
-            match DockerStartContainers::execute(vec![id]) {
-                Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
-                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+        // if action == "start" {
+        //     match DockerStartContainers::execute(vec![id]) {
+        //         Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
+        //         Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+        //     }
+        // } else if action == "stop" {
+        //     match DockerStopContainers::execute(vec![id]) {
+        //         Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
+        //         Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+        //     }
+        // } else {
+        //     return (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name")));
+        // }
+
+        match action.as_str() {
+            "start" => {
+                match DockerStartContainers::execute(vec![id]) {
+                    Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
+                    Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+                }
             }
-        } else if action == "stop" {
-            match DockerStopContainers::execute(vec![id]) {
-                Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
-                Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+            "stop" => {
+                match DockerStopContainers::execute(vec![id]) {
+                    Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
+                    Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+                }
             }
-        } else {
-            return (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name")));
+            _ => (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name"))),
         }
     }
 
@@ -85,7 +102,16 @@ impl MyServer {
         let mut context = Context::new();
         let x = DockerListAllContainers::execute(vec![]).unwrap();
         context.insert("containers", &x.output);
-        let result_str = templater.render("tera_index.html", &context).unwrap();
+        let result_str = templater.render("containers.html", &context).unwrap();
+        Html(result_str)
+    }
+
+    async fn images() -> Html<String> {
+        let templater = Templates::get_templater();
+        let mut context = Context::new();
+        //let x = DockerListAllImages::execute(vec![]).unwrap();
+        //context.insert("images", &x.output);
+        let result_str = templater.render("images.html", &context).unwrap();
         Html(result_str)
     }
 
