@@ -615,16 +615,7 @@
             </div>
             <div class="container">
                 <div class="page-inner">
-                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                        <div>
-                            <h3 class="fw-bold mb-3">Dashboard</h3>
-                            <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
-                        </div>
-                        <div class="ms-md-auto py-2 py-md-0">
-                            <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                            <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-                        </div>
-                    </div>
+                    {% block content -%}{% endblock content -%}
                 </div>
             </div>
             <footer class="footer">
@@ -659,14 +650,14 @@
     <script src="static/js/core/jquery-3.7.1.min.js"></script>
     <script src="static/js/core/popper.min.js"></script>
     <script src="static/js/core/bootstrap.min.js"></script>
-    <!-- Datatables -->
-    <script src="static/js/plugin/datatables/datatables.min.js"></script>
+    <!-- HTMX JS -->
+    <script src="https://unpkg.com/htmx.org@2.0.0" integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw" crossorigin="anonymous"></script>
+
     <!-- jQuery Scrollbar -->
     <script src="static/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <!-- Bootstrap Notify -->
-    <script src="static/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-    <!-- Sweet Alert -->
-    <script src="static/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Kaiadmin JS -->
+    <script src="static/js/kaiadmin.min.js"></script>
 
     <!-- <section id="header">
         <p>Header goes here</p>
@@ -679,14 +670,12 @@
         </ul>
     </section>
     <section id="content">
-        {% block content -%}{% endblock content -%}
+        {% block cntent -%}{% endblock cntent -%}
     </section>
     <section id="footer">
         Footer goes here
     </section>
-    <script src="https://unpkg.com/htmx.org@2.0.0"
-        integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw"
-        crossorigin="anonymous"></script>
+    
     <script src="static/script.js"></script> -->
 </body>
 

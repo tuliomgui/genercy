@@ -1,44 +1,177 @@
 {% extends "tera_tpl.html" -%}
 {% block title -%}Genercy - Container Management App{% endblock title %}
 {% block content -%}
-    <h1>Containers list</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Source image</th>
-                <th>Creation date</th>
-                <th>State</th>
-                <th>Control</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for container in containers %}
-            <tr>
-                <td>{{loop.index}}</td>
-                <td>{{container["ID"]}}</td>
-                <td>{{container["Names"]}}</td>
-                <td>{{container["Image"]}}</td>
-                <td>{{container["CreatedAt"]}}</td>
-                <td>
-                    {% if container["State"] == "running" %}
-                        <img src="static/images/robot_green.svg" width="30" height="30" id='status-img-{{container["ID"]}}' />
-                    {% else %}
-                        <img src="static/images/robot_red.svg" width="30" height="30" id='status-img-{{container["ID"]}}' />
-                    {% endif %}
-                </td>
-                <td data-container-id='{{container["ID"]}}' data-hx-on::after-request="updateContainerStatus(event)">
-                    {% if container["State"] == "running" %}
-                        {% include "container_stop_button.html" -%}
-                    {% else %}
-                        {% include "container_start_button.html" -%}
-                    {% endif %}
-                    <img src="static/images/spinning-dots.svg" width="23px" height="23px" class="htmx-indicator" id='indicator-{{container["ID"]}}' />
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        <h3 class="fw-bold mb-3">Dashboard 222</h3>
+        <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
+    </div>
+    <div class="ms-md-auto py-2 py-md-0">
+        <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
+        <a href="#" class="btn btn-primary btn-round">Add Customer</a>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="card card-round">
+        <div class="card-header">
+            <div class="card-head-row card-tools-still-right">
+                <div class="card-title">Containers</div>
+                <div class="card-tools">
+                    <div class="dropdown">
+                        <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <!-- Projects table -->
+                <table class="table align-items-center mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col" class="text-center">ID</th>
+                            <th scope="col" class="text-center">Name</th>
+                            <th scope="col" class="text-end">Creation date</th>
+                            <th scope="col" class="text-center">State</th>
+                            <th scope="col" class="text-center">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for container in containers %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                <!-- <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button> -->
+                                {{container["ID"]}}
+                            </td>
+                            <td>{{container["Names"]}}</td>
+                            <td class="text-end">{{container["CreatedAt"]}}</td>
+                            <td class="text-center">
+                                {% if container["State"] == "running" %}
+                                <!-- <img src="static/images/robot_green.svg" width="30" height="30" id='status-img- { {container["ID"] } }' /> -->
+                                <span class="badge badge-success">Running</span>
+                                {% else %}
+                                <span class="badge badge-danger">Stopped</span>
+                                <!-- <img src="static/images/robot_red.svg" width="30" height="30" id='status-img- { {container["ID"] } }' /> -->
+                                {% endif %}
+                            </td>
+                            <td class="text-center" data-container-id='{{container["ID"]}}'
+                                data-hx-on::after-request="updateContainerStatus(event)">
+                                {% if container["State"] == "running" %}
+                                {% include "container_stop_button.html" -%}
+                                {% else %}
+                                {% include "container_start_button.html" -%}
+                                {% endif %}
+                                <img src="static/images/spinning-dots.svg" width="23px" height="23px" class="htmx-indicator" id='indicator-{{container["ID"]}}' />
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <!-- <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                                <span class="badge badge-success">Completed</span>
+                            </td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
