@@ -1,4 +1,5 @@
 .control-link { padding: 0 3px; margin: 0 3px; cursor: pointer; text-decoration: underline; }
 .htmx-request.control-link { display: none; }
-.htmx-indicator { display: none; }
-.htmx-request.htmx-indicator { display: inline; }
+.container-controls img { display: none; }
+.container-controls.htmx-request img { display: inline; }
+.container-controls.htmx-request a { display: none; }
