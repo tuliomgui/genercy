@@ -7,9 +7,9 @@ WORKDIR /opt/genercy
 RUN groupadd -g 1000 tulio && \
     useradd -u 1000 -g 1000 -m tulio
 USER tulio
-# ADD . .
-# RUN cargo build
-# RUN cp target/debug/genercy .
-# RUN rm -rf target
+ADD . .
+RUN cargo build
+RUN cp target/debug/genercy .
+RUN rm -rf target
 
 CMD [""]
