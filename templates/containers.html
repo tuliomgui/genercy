@@ -3,8 +3,8 @@
 {% block content -%}
 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
     <div>
-        <h3 class="fw-bold mb-3">Dashboard 222</h3>
-        <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
+        <h3 class="fw-bold mb-3">Containers</h3>
+        <h6 class="op-7 mb-2">Manage the Docker containers</h6>
     </div>
     <div class="ms-md-auto py-2 py-md-0">
         <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
@@ -37,9 +37,9 @@
                 <table class="table align-items-center mb-0">
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col" class="text-center">ID</th>
-                            <th scope="col" class="text-center">Name</th>
+                            <th scope="col" class="text-center">#</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
                             <th scope="col" class="text-end">Creation date</th>
                             <th scope="col" class="text-center">State</th>
                             <th scope="col" class="text-center">Control</th>
@@ -48,7 +48,7 @@
                     <tbody>
                         {% for container in containers %}
                         <tr>
-                            <td>{{loop.index}}</td>
+                            <td class="text-center">{{loop.index}}</td>
                             <td>
                                 <!-- <button class="btn btn-icon btn-round btn-success btn-sm me-2">
                                     <i class="fa fa-check"></i>
