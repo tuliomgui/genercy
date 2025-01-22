@@ -83,17 +83,21 @@ impl MyServer {
         match action.as_str() {
             "start" => {
                 match DockerStartContainers::execute(vec![id]) {
-                    Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
-                    Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+                    //Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
+                    Ok(x) => (StatusCode::OK, Json(json!({"success": true, "message": ""}))),
+                    Err(error) => (StatusCode::OK, Json(json!({"success": false, "message": error})))
                 }
             }
             "stop" => {
                 match DockerStopContainers::execute(vec![id]) {
-                    Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
-                    Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+                    // Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
+                    // Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+                    Ok(x) => (StatusCode::OK, Json(json!({"success": true, "message": ""}))),
+                    Err(error) => (StatusCode::OK, Json(json!({"success": false, "message": error})))
                 }
             }
-            _ => (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name"))),
+            // _ => (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name"))),
+            _ => (StatusCode::BAD_REQUEST, Json(json!({"success": false, "message": "Bad request"}))),
         }
     }
 

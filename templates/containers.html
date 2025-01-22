@@ -49,12 +49,7 @@
                         {% for container in containers %}
                         <tr>
                             <td class="text-center">{{loop.index}}</td>
-                            <td>
-                                <!-- <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                    <i class="fa fa-check"></i>
-                                </button> -->
-                                {{container["ID"]}}
-                            </td>
+                            <td>{{container["ID"]}}</td>
                             <td>{{container["Names"]}}</td>
                             <td class="text-end">{{container["CreatedAt"]}}</td>
                             <td class="text-center">
