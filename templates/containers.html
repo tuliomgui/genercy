@@ -59,7 +59,7 @@
                                 <span class="badge badge-danger">Stopped</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center container-controls" data-container-id='{{container["ID"]}}' data-hx-on::after-request="updateContainerStatus(event)" data-hx-indicator='this'>
+                            <td class="text-center container-controls" data-container-id='{{container["ID"]}}' data-hx-on::after-request="containerResponse(event)" data-hx-indicator='this'>
                                 {% if container["State"] == "running" %}
                                     {% include "container_stop_button.html" -%}
                                 {% else %}

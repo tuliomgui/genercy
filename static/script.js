@@ -10,3 +10,16 @@
 //         alert("Error");
 //     }
 // }
+
+function containerResponse(event) {
+    if (event.detail.successful) {
+        let jsonResp = JSON.parse(event.detail.xhr.response)
+        let success = jsonResp.success;
+        let message = jsonResp.message;
+        console.log("Success: %o", success);
+        console.log("Message: %o", message);
+    } else {
+        alert("Não foi possível executar a ação desejada, ocorreu um erro de comunicação com o servidor.");
+    }
+    //console.log("ResponseText: %o", event.detail.xhr.responseText);
+}
