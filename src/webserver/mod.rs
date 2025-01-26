@@ -67,10 +67,13 @@ impl MyServer {
         let mut context = Context::new();
         context.insert("container", &HashMap::from([("ID", &id)]));
         let id_copy = id.clone();
+        let id_copy = id.clone();
         match action.as_str() {
             "start" => {
                 match DockerStartContainers::execute(vec![id]) {
                     //Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
+                    Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
+                    Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                     Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
                     Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                 }
@@ -79,6 +82,8 @@ impl MyServer {
                 match DockerStopContainers::execute(vec![id]) {
                     // Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
                     // Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
+                    Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
+                    Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                     Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
                     Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                 }
