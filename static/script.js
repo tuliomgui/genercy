@@ -1,10 +1,10 @@
 function updateContainerStatus(containerId) {
     let containerLine = document.getElementById("line-" + containerId);
-    const badge = containerLine.getElementsByClassName("badge-success");
-    if (badge === null || badge.length === 0)
-        containerLine.innerHTML = '<span class="badge badge-success">Running</span>';
+    const badge = containerLine.getElementsByClassName("badge")[0];
+    if (badge.classList.contains('badge-success'))
+        badge.parentNode.innerHTML = '<span class="badge badge-danger">Stopped</span>';
     else
-        containerLine.innerHTML = '<span class="badge badge-danger">Stopped</span>';
+        badge.parentNode.innerHTML = '<span class="badge badge-success">Running</span>';
 }
 
 const toastContainer = document.getElementById('toast-container');
