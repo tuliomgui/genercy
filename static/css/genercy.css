@@ -3,3 +3,4 @@
 .container-controls img { display: none; }
 .container-controls.htmx-request img { display: inline; }
 .container-controls.htmx-request a { display: none; }
+.toast-header i { padding-right: 5px; font-size: 120%; }

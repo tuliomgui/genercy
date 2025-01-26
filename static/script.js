@@ -1,15 +1,11 @@
-// function updateContainerStatus(evt) {
-//     if (evt.detail.successful) {
-//         //alert("Requested: Status=" + evt.detail.xhr.status + " / ID=" + evt.detail.elt.getAttribute("data-container-id"));
-//         let imgStatus = document.getElementById("status-img-" + evt.detail.elt.getAttribute("data-container-id"));
-//         if (imgStatus.src.indexOf("red") < 0)
-//             imgStatus.src = imgStatus.src.replace("green.svg","red.svg");
-//         else
-//             imgStatus.src = imgStatus.src.replace("red.svg","green.svg");
-//     } else {
-//         alert("Error");
-//     }
-// }
+function updateContainerStatus(containerId) {
+    let containerLine = document.getElementById("line-" + containerId);
+    const badge = containerLine.getElementsByClassName("badge-success");
+    if (badge === null || badge.length === 0)
+        containerLine.innerHTML = '<span class="badge badge-success">Running</span>';
+    else
+        containerLine.innerHTML = '<span class="badge badge-danger">Stopped</span>';
+}
 
 const toastContainer = document.getElementById('toast-container');
 
@@ -17,9 +13,14 @@ function containerResponse(event) {
     if (event.detail.successful) {
         let jsonResp = JSON.parse(event.detail.xhr.response)
         addToast(jsonResp.message, jsonResp.success ? 'success' : 'error');
+        updateContainerStatus(jsonResp.id);
     } else {
         addToast("There was an error with the server communication.", 'error');
     }
+}
+
+function addClasses(element, classes) {
+    classes.forEach(cls => element.classList.add(cls));
 }
 
 function addToast(message, severity = 'info') {
@@ -35,8 +36,8 @@ function addToast(message, severity = 'info') {
     const toastClone = toastModel[0].cloneNode(true);
     toastClone.classList.remove('toast-model');
     toastClone.classList.add(getSeverityClass(severity));
-    // toastClone.getElementsByTagName('i')[0].classList.add(getSeverityIcon(severity));
-    // toastClone.querySelector('.toast-header').textContent = severity.charAt(0).toUpperCase() + severity.slice(1);
+    addClasses(toastClone.getElementsByTagName('i')[0], getSeverityIcon(severity));
+    toastClone.querySelector('.toast-header-text').textContent = severity.charAt(0).toUpperCase() + severity.slice(1);
     toastClone.querySelector('.toast-body').textContent = message;
     toastContainer.appendChild(toastClone);
     const toast = new bootstrap.Toast(toastClone);
@@ -49,13 +50,13 @@ function addToast(message, severity = 'info') {
 function getSeverityClass(severity) {
     switch (severity) {
         case 'success':
-            return 'bg-success';
+            return 'text-bg-success';
         case 'warning':
-            return 'bg-warning';
+            return 'text-bg-warning';
         case 'error':
-            return 'bg-danger';
+            return 'text-bg-danger';
         default:
-            return 'bg-secondary';
+            return 'text-bg-secondary';
     }
 }
 

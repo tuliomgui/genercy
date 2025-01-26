@@ -23,9 +23,10 @@
                             <i class="fas fa-ellipsis-h"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="#" onclick="addToast('This a success message.','success')">Success</a>
+                            <a class="dropdown-item" href="#" onclick="addToast('Becarefull, this is a warning.','warning')">Warning</a>
+                            <a class="dropdown-item" href="#" onclick="addToast('Oh gosh, an error message!','error')">Error</a>
+                            <a class="dropdown-item" href="#" onclick="addToast('Just be informed of it.','info')">Info</a>
                         </div>
                     </div>
                 </div>
@@ -47,7 +48,7 @@
                     </thead>
                     <tbody>
                         {% for container in containers %}
-                        <tr>
+                        <tr id='line-{{container["ID"]}}'>
                             <td class="text-center">{{loop.index}}</td>
                             <td>{{container["ID"]}}</td>
                             <td>{{container["Names"]}}</td>
