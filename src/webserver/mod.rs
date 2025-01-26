@@ -66,38 +66,24 @@ impl MyServer {
     async fn container_action_handler(Path((id, action)): Path<(String, String)>) -> impl IntoResponse {
         let mut context = Context::new();
         context.insert("container", &HashMap::from([("ID", &id)]));
-        // if action == "start" {
-        //     match DockerStartContainers::execute(vec![id]) {
-        //         Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
-        //         Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
-        //     }
-        // } else if action == "stop" {
-        //     match DockerStopContainers::execute(vec![id]) {
-        //         Ok(x) => return (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
-        //         Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
-        //     }
-        // } else {
-        //     return (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name")));
-        // }
-
         match action.as_str() {
             "start" => {
                 match DockerStartContainers::execute(vec![id]) {
                     //Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
-                    Ok(x) => (StatusCode::OK, Json(json!({"success": true, "message": ""}))),
-                    Err(error) => (StatusCode::OK, Json(json!({"success": false, "message": error})))
+                    Ok(x) => (StatusCode::OK, Json(json!({"id": id, "success": true, "message": ""}))),
+                    Err(error) => (StatusCode::OK, Json(json!({"id": id, "success": false, "message": error})))
                 }
             }
             "stop" => {
                 match DockerStopContainers::execute(vec![id]) {
                     // Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
                     // Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
-                    Ok(x) => (StatusCode::OK, Json(json!({"success": true, "message": ""}))),
-                    Err(error) => (StatusCode::OK, Json(json!({"success": false, "message": error})))
+                    Ok(x) => (StatusCode::OK, Json(json!({"id": id, "success": true, "message": ""}))),
+                    Err(error) => (StatusCode::OK, Json(json!({"id": id, "success": false, "message": error})))
                 }
             }
             // _ => (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name"))),
-            _ => (StatusCode::BAD_REQUEST, Json(json!({"success": false, "message": "Bad request"}))),
+            _ => (StatusCode::BAD_REQUEST, Json(json!({"id": id, "success": false, "message": "Bad request"}))),
         }
     }
 
