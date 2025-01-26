@@ -61,6 +61,19 @@
 </head>
 
 <body>
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0" style="padding-top: 20px; padding-right: 20px;">
+        <div class="toast toast-model" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class=""></i>
+                <strong class="me-auto toast-header-text">Bootstrap</strong>
+                <small class="toast-header-time">11 mins ago</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
     <div class="wrapper">
         <div class="sidebar" data-background-color="dark">
             <div class="sidebar-logo">
@@ -679,7 +692,9 @@
     <script src="static/js/core/popper.min.js"></script>
     <script src="static/js/core/bootstrap.min.js"></script>
     <!-- HTMX JS -->
-    <script src="https://unpkg.com/htmx.org@2.0.0" integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.0"
+        integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw"
+        crossorigin="anonymous"></script>
 
     <!-- jQuery Scrollbar -->
     <script src="static/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
