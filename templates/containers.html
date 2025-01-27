@@ -60,13 +60,14 @@
                                 <span class="badge badge-danger">Stopped</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center container-controls" data-container-id='{{container["ID"]}}' data-hx-on::after-request="containerResponse(event)" data-hx-indicator='this'>
-                                {% if container["State"] == "running" %}
-                                    {% include "container_stop_button.html" -%}
-                                {% else %}
+                            {% if container["State"] == "running" %}
+                                <td class="text-center container-controls state-stopped" data-container-id='{{container["ID"]}}' data-hx-on::after-request="containerResponse(event)" data-hx-indicator='this'>
+                            {% else %}
+                                <td class="text-center container-controls state-started" data-container-id='{{container["ID"]}}' data-hx-on::after-request="containerResponse(event)" data-hx-indicator='this'>
+                            {% endif %}
+                                    {% include "container_stop_button.html" -%}    
                                     {% include "container_start_button.html" -%}
-                                {% endif %}
-                                <img src="static/images/gear-spinner.svg" width="23px" height="23px" />
+                                    <img src="static/images/gear-spinner.svg" width="23px" height="23px" />
                             </td>
                         </tr>
                         {% endfor %}

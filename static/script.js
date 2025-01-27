@@ -1,10 +1,16 @@
 function updateContainerStatus(containerId) {
     let containerLine = document.getElementById("line-" + containerId);
     const badge = containerLine.getElementsByClassName("badge")[0];
-    if (badge.classList.contains('badge-success'))
+    const controls = containerLine.getElementsByClassName("container-controls")[0];
+    if (badge.classList.contains('badge-success')) {
         badge.parentNode.innerHTML = '<span class="badge badge-danger">Stopped</span>';
-    else
+        controls.classList.remove("state-started");
+        controls.classList.add("state-stopped");
+    } else {
         badge.parentNode.innerHTML = '<span class="badge badge-success">Running</span>';
+        controls.classList.remove("state-stopped");
+        controls.classList.add("state-started");
+    }
 }
 
 const toastContainer = document.getElementById('toast-container');
@@ -13,7 +19,9 @@ function containerResponse(event) {
     if (event.detail.successful) {
         let jsonResp = JSON.parse(event.detail.xhr.response)
         addToast(jsonResp.message, jsonResp.success ? 'success' : 'error');
-        updateContainerStatus(jsonResp.id);
+        if (jsonResp.success) {
+            updateContainerStatus(jsonResp.id);
+        }
     } else {
         addToast("There was an error with the server communication.", 'error');
     }
