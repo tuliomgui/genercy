@@ -18,6 +18,7 @@ use tower_http::services::ServeDir;
 mod templater;
 mod error;
 use crate::container_com::*;
+use crate::container_com::DockerListAllImages;
 
 use templater::Templates;
 
@@ -101,8 +102,8 @@ impl MyServer {
     async fn images() -> Html<String> {
         let templater = Templates::get_templater();
         let mut context = Context::new();
-        //let x = DockerListAllImages::execute(vec![]).unwrap();
-        //context.insert("images", &x.output);
+        let x = DockerListAllImages::execute(vec![]).unwrap();
+        context.insert("images", &x.output);
         let result_str = templater.render("images.html", &context).unwrap();
         Html(result_str)
     }

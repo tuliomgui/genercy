@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use std::process::{Command, ExitStatus, Output};
 use serde_json::{json, Value};
 
+pub mod image;
+
 #[derive(Debug)]
 pub struct CommandStruct {
     pub command: String,
@@ -45,7 +47,7 @@ impl ContainerCommand for DockerListAllContainers {
         let command_args = vec![String::from("ps"), String::from("--all"), String::from("--format"), String::from("json")];
         let mut command_struct = CommandStruct::new(command_name, command_args);
         let command_result = Self::execute_os_command(&command_struct)?;
-            if !command_result.status.success() {
+        if !command_result.status.success() {
             return Err(String::from_utf8(command_result.stderr).unwrap());
         }
 

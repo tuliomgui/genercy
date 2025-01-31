@@ -1,6 +1,14 @@
 {% extends "tera_tpl.html" -%}
 {% block title -%}Genercy - Container Management App{% endblock title %}
 {% block content -%}
-    <h1>Images</h1>
-    <p>Manage the Docker images</p>
+<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        <h3 class="fw-bold mb-3">Images</h3>
+        <h6 class="op-7 mb-2">Manage the Docker images</h6>
+    </div>
+    <div class="ms-md-auto py-2 py-md-0">
+        <a href="#" class="btn btn-label-info btn-round me-2" onclick="">Total images</a>
+        <a href="#" class="btn btn-primary btn-round">{{images.len()}}</a>
+    </div>
+</div>
 {% endblock content %}
