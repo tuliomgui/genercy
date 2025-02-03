@@ -6,3 +6,5 @@
 .toast-header i { padding-right: 5px; font-size: 120%; }
 .state-started .control-stop { display: none; }
 .state-stopped .control-start { display: none; }
+.gen-trash { color: #000; font-size: 125%; } 
+.gen-trash:hover { color: #F25961; cursor: pointer; } 
