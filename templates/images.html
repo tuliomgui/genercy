@@ -55,7 +55,10 @@
                             <td class="text-end">{{image["CreatedAt"]}}</td>
                             <td class="text-center">{{image["Size"]}}</td>
                             <td class="text-center">{{image["Tag"]}}</td>
-                            <td class="text-center"><i class="bi bi-trash gen-trash"></i></td>
+                            <td class="text-center">
+                                <i class="bi bi-trash gen-trash"></i>
+                                <i class="fas fa-ellipsis-h gen-dots"></i>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
