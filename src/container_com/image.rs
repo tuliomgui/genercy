@@ -35,3 +35,25 @@ impl ContainerCommand for DockerListAllImages {
         Ok(command_struct)
     }
 }
+
+pub struct DockerDeleteImages;
+
+impl ContainerCommand for DockerDeleteImages {
+    fn execute(args: Vec<String>) -> Result<CommandStruct, String> {
+        if args.len() != 1 {
+            return Err(format!("Expected 1 argument, got {}", args.len()));
+        }
+        let command_name = String::from("docker");
+        let command_args = vec![String::from("image"), String::from("rm"), String::from("--force"), args[0].clone()];
+        let mut command_struct = CommandStruct::new(command_name, command_args);
+        let command_result = Self::execute_os_command(&command_struct)?;
+        if !command_result.status.success() {
+            return Err(String::from_utf8(command_result.stderr).unwrap());
+        }
+        let stdout_string = String::from_utf8(command_result.stdout).unwrap();
+        let stdout_lines = stdout_string.lines();
+        command_struct.is_ok = command_result.status.success();
+        command_struct.exit_code = command_result.status.code().unwrap();
+        Ok(command_struct)
+    }
+}

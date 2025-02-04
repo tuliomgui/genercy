@@ -56,7 +56,12 @@
                             <td class="text-center">{{image["Size"]}}</td>
                             <td class="text-center">{{image["Tag"]}}</td>
                             <td class="text-center">
-                                <i class="bi bi-trash gen-trash"></i>
+                                <div class="action-container" data-hx-indicator='this'>
+                                    <a class="control-link control-start" data-hx-delete='/image/{{container["ID"]}}' data-hx-swap="none">
+                                        <i class="bi bi-trash gen-trash"></i>
+                                    </a>
+                                    {% include "spinner-icon.html" -%}
+                                </div>
                                 <i class="fas fa-ellipsis-h gen-dots"></i>
                             </td>
                         </tr>

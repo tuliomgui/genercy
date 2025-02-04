@@ -5,7 +5,7 @@ use axum::extract::ws::{Message, WebSocket};
 use axum::response::{Html, IntoResponse, Response};
 use axum::{Form, Json, Router};
 use axum::extract::{Path, WebSocketUpgrade};
-use axum::routing::{get, post};
+use axum::routing::{get, post, delete};
 use axum::http::StatusCode;
 use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};
@@ -18,7 +18,7 @@ use tower_http::services::ServeDir;
 mod templater;
 mod error;
 use crate::container_com::*;
-use crate::container_com::image::DockerListAllImages;
+use crate::container_com::image::*;
 
 use templater::Templates;
 
@@ -56,6 +56,7 @@ impl MyServer {
             .route("/form", post(MyServer::form_test))
             .route("/ws", get(MyServer::ws_handler))
             .route("/container/:id/:action", get(MyServer::container_action_handler))
+            .route("/image/:id", delete(MyServer::image_delete_handler))
             .route("/images", get(MyServer::images))
             .nest_service("/static", ServeDir::new("static"));
             //.with_state(server_state);
@@ -64,28 +65,31 @@ impl MyServer {
         axum::serve(listener, app).await.unwrap();
     }
 
+    async fn image_delete_handler(Path(id): Path<String>) -> impl IntoResponse {
+        let id_copy = id.clone();
+        match DockerDeleteImages::execute(vec![id]) {
+            Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": "Image was successfully deleted."}))),
+            Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
+        }
+    }
+
     async fn container_action_handler(Path((id, action)): Path<(String, String)>) -> impl IntoResponse {
         let mut context = Context::new();
         context.insert("container", &HashMap::from([("ID", &id)]));
         let id_copy = id.clone();
-        let id_copy = id.clone();
         match action.as_str() {
             "start" => {
                 match DockerStartContainers::execute(vec![id]) {
-                    //Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_stop_button.html", &context).unwrap()))),
                     Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
                     Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                 }
             }
             "stop" => {
                 match DockerStopContainers::execute(vec![id]) {
-                    // Ok(x) => (StatusCode::OK, Html(String::from(Templates::get_templater().render("container_start_button.html", &context).unwrap()))),
-                    // Err(error) => (StatusCode::INTERNAL_SERVER_ERROR, Html(error))
                     Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
                     Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                 }
             }
-            // _ => (StatusCode::BAD_REQUEST, Html(String::from("Invalid action name"))),
             _ => (StatusCode::BAD_REQUEST, Json(json!({"id": id_copy, "success": false, "message": "Bad request"}))),
         }
     }
