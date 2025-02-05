@@ -62,7 +62,8 @@
 </head>
 
 <body>
-    <div id="toast-container" class="toast-container position-fixed top-0 end-0" style="padding-top: 20px; padding-right: 20px;">
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0"
+        style="padding-top: 20px; padding-right: 20px;">
         <div class="toast toast-model" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <i class=""></i>
@@ -687,6 +688,23 @@
                     </div>
                 </div>
             </footer>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" id="gen-modal-template">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary modal-button">Save</button>
+                </div>
+            </div>
         </div>
     </div>
     <script src="static/js/core/jquery-3.7.1.min.js"></script>

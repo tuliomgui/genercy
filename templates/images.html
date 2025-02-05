@@ -34,11 +34,12 @@
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table align-items-center mb-0">
+                <table class="table align-items-center mb-0" id="gen-images-table">
                     <thead class="thead-light">
                         <tr>
                             <th scope="col" class="text-center">#</th>
                             <th scope="col">ID</th>
+                            <th scope="col">Repository</th>
                             <th scope="col">Containers</th>
                             <th scope="col" class="text-end">Creation date</th>
                             <th scope="col" class="text-center">Size</th>
@@ -46,23 +47,29 @@
                             <th scope="col" class="text-center">Controls</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="gen-images-tbody">
                         {% for image in images %}
-                        <tr id='line-{{image["ID"]}}'>
-                            <td class="text-center">{{loop.index}}</td>
+                        <tr id='gen-line-{{image["ID"]}}'>
+                            <td class="text-center tbody-row-number">{{loop.index}}</td>
                             <td>{{image["ID"]}}</td>
+                            <td>{{image["Repository"]}}</td>
                             <td>{{image["Containers"]}}</td>
                             <td class="text-end">{{image["CreatedAt"]}}</td>
                             <td class="text-center">{{image["Size"]}}</td>
                             <td class="text-center">{{image["Tag"]}}</td>
                             <td class="text-center">
-                                <div class="action-container" data-hx-indicator='this'>
-                                    <a class="control-link control-start" data-hx-delete='/image/{{container["ID"]}}' data-hx-swap="none">
+                                <div class="action-container" style="display: inline;" data-hx-on::after-request="handleImageDeletion(event)" data-hx-indicator='this'>
+                                    <a class="control-link control-start" data-hx-delete='/image/{{image["ID"]}}' data-hx-swap="none">
                                         <i class="bi bi-trash gen-trash"></i>
                                     </a>
                                     {% include "spinner-icon.html" -%}
                                 </div>
-                                <i class="fas fa-ellipsis-h gen-dots"></i>
+                                <div class="action-container" style="display: inline;" data-bs-toggle="modal" data-bs-target='#gen-modal-template'>
+                                    <a class="control-link control-start" onclick="openModal('gen-modal-template', 'Delete confirmation', 'Do you really want to delete the image {{image["ID"]}}?', () => { console.log('Clicou') }, 'Delete', 'btn-danger')">
+                                        <i class="fas fa-ellipsis-h gen-dots"></i>
+                                    </a>
+                                </div>
+                                
                             </td>
                         </tr>
                         {% endfor %}

@@ -80,3 +80,45 @@ function getSeverityIcon(severity) {
             return ['bi', 'bi-card-checklist'];
     }
 }
+
+function handleImageDeletion(event) {
+    if (event.detail.successful) {
+        let jsonResp = JSON.parse(event.detail.xhr.response)
+        addToast(jsonResp.message, jsonResp.success ? 'success' : 'error');
+        if (jsonResp.success) {
+            removeTableRow('gen-images-tbody', 'gen-line-'+jsonResp.id);
+        }
+    } else {
+        addToast("There was an error with the server communication.", 'error');
+    }
+}
+
+function removeTableRow(tbodyId, rowId) {
+    const tbody = document.getElementById(tbodyId);
+    const row = document.getElementById(rowId);
+    if (tbody && row) {
+        tbody.removeChild(row);
+        const rows = tbody.getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            const rowNumberCell = rows[i].getElementsByClassName('tbody-row-number')[0];
+            if (rowNumberCell) {
+                rowNumberCell.textContent = i + 1;
+            }
+        }
+    }
+}
+
+function openModal(modalId, modalHeaderTxt, modalHeaderBody, callbackFunc, buttonText, buttonColor) {
+    const modal = document.getElementById(modalId);
+    const modalHeader = modal.getElementsByClassName('modal-title')[0];
+    const modalBody = modal.getElementsByClassName('modal-body')[0];
+    const modalButton = modal.getElementsByClassName('modal-button')[0];
+    modalHeader.textContent = modalHeaderTxt;
+    modalBody.textContent = modalHeaderBody;
+    modalButton.textContent = buttonText;
+    modalButton.classList.remove('btn-primary', 'btn-danger', 'btn-success');
+    modalButton.classList.add(buttonColor);
+    modalButton.onclick = callbackFunc;
+    const modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+}
