@@ -108,17 +108,21 @@ function removeTableRow(tbodyId, rowId) {
     }
 }
 
-function openModal(modalId, modalHeaderTxt, modalHeaderBody, callbackFunc, buttonText, buttonColor) {
-    const modal = document.getElementById(modalId);
+function openModal(modalData, callbackFunc) {
+    // {id: 'gen-modal-template', title: 'Delete confirmation', message: 'Do you really want to delete the image {{image["ID"]}}?', buttonText: 'Delete', buttonClass: 'btn-danger'}
+    
+    const modal = document.getElementById(modalData.id);
     const modalHeader = modal.getElementsByClassName('modal-title')[0];
     const modalBody = modal.getElementsByClassName('modal-body')[0];
     const modalButton = modal.getElementsByClassName('modal-button')[0];
-    modalHeader.textContent = modalHeaderTxt;
-    modalBody.textContent = modalHeaderBody;
-    modalButton.textContent = buttonText;
+    modalHeader.textContent = modalData.title;
+    modalBody.textContent = modalData.message;
+    modalButton.textContent = modalData.buttonText;
     modalButton.classList.remove('btn-primary', 'btn-danger', 'btn-success');
-    modalButton.classList.add(buttonColor);
-    modalButton.onclick = callbackFunc;
-    const modalInstance = new bootstrap.Modal(modal);
-    modalInstance.show();
+    modalButton.classList.add(modalData.buttonClass);
+    //modalButton.onclick = callbackFunc;
+    modalButton.dataset.hxDelete = modalData.reqUrl;
+    modalButton.dataset.hxSwap = 'none';
+    // const modalInstance = new bootstrap.Modal(modal);
+    // modalInstance.show();
 }

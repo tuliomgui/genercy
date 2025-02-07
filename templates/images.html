@@ -65,7 +65,7 @@
                                     {% include "spinner-icon.html" -%}
                                 </div>
                                 <div class="action-container" style="display: inline;" data-bs-toggle="modal" data-bs-target='#gen-modal-template'>
-                                    <a class="control-link control-start" onclick="openModal('gen-modal-template', 'Delete confirmation', 'Do you really want to delete the image {{image["ID"]}}?', () => { console.log('Clicou') }, 'Delete', 'btn-danger')">
+                                    <a class="control-link control-start" onclick="openModal({id: 'gen-modal-template', title: 'Delete confirmation', message: 'Do you really want to delete the image {{image["ID"]}}?', buttonText: 'Delete', buttonClass: 'btn-danger', reqVerb: 'delete', reqUrl: '/image/{{image["ID"]}}'}, () => { console.log('Clicou') })">
                                         <i class="fas fa-ellipsis-h gen-dots"></i>
                                     </a>
                                 </div>
