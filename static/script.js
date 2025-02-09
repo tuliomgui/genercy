@@ -4,12 +4,12 @@ function updateContainerStatus(containerId) {
     const controls = containerLine.getElementsByClassName("container-controls")[0];
     if (badge.classList.contains('badge-success')) {
         badge.parentNode.innerHTML = '<span class="badge badge-danger">Stopped</span>';
-        controls.classList.remove("state-started");
-        controls.classList.add("state-stopped");
-    } else {
-        badge.parentNode.innerHTML = '<span class="badge badge-success">Running</span>';
         controls.classList.remove("state-stopped");
         controls.classList.add("state-started");
+    } else {
+        badge.parentNode.innerHTML = '<span class="badge badge-success">Running</span>';
+        controls.classList.remove("state-started");
+        controls.classList.add("state-stopped");
     }
 }
 

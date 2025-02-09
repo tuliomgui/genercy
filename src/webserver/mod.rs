@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 use std::fmt::Error;
 use std::sync::{Mutex, OnceLock};
 use axum::extract::ws::{Message, WebSocket};
@@ -12,7 +12,6 @@ use futures_util::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tera::Context;
-//use tower_http::classify::ServerErrorsFailureClass::StatusCode;
 use tower_http::services::ServeDir;
 
 mod templater;
@@ -80,13 +79,13 @@ impl MyServer {
         match action.as_str() {
             "start" => {
                 match DockerStartContainers::execute(vec![id]) {
-                    Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
+                    Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": format!("Container {} was successfully started", id_copy)}))),
                     Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                 }
             }
             "stop" => {
                 match DockerStopContainers::execute(vec![id]) {
-                    Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": ""}))),
+                    Ok(x) => (StatusCode::OK, Json(json!({"id": id_copy, "success": true, "message": format!("Container {} was successfully stopped", id_copy)}))),
                     Err(error) => (StatusCode::OK, Json(json!({"id": id_copy, "success": false, "message": error})))
                 }
             }
