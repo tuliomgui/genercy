@@ -108,9 +108,7 @@ function removeTableRow(tbodyId, rowId) {
     }
 }
 
-function openModal(modalData, callbackFunc) {
-    // {id: 'gen-modal-template', title: 'Delete confirmation', message: 'Do you really want to delete the image {{image["ID"]}}?', buttonText: 'Delete', buttonClass: 'btn-danger'}
-    
+function openModal(modalData, afterReqFunc) {
     const modal = document.getElementById(modalData.id);
     const modalHeader = modal.getElementsByClassName('modal-title')[0];
     const modalBody = modal.getElementsByClassName('modal-body')[0];
@@ -120,9 +118,9 @@ function openModal(modalData, callbackFunc) {
     modalButton.textContent = modalData.buttonText;
     modalButton.classList.remove('btn-primary', 'btn-danger', 'btn-success');
     modalButton.classList.add(modalData.buttonClass);
-    //modalButton.onclick = callbackFunc;
     modalButton.dataset.hxDelete = modalData.reqUrl;
     modalButton.dataset.hxSwap = 'none';
-    // const modalInstance = new bootstrap.Modal(modal);
-    // modalInstance.show();
+    modalButton.setAttribute('hx-on-htmx-after-request', afterReqFunc);
+    htmx.process(modal);
+    (new bootstrap.Modal(modal)).show();
 }
