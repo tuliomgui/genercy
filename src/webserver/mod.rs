@@ -52,6 +52,7 @@ impl MyServer {
         let app = Router::new()
             .route("/", get(MyServer::index))
             .route("/hello", get(MyServer::hello_world))
+            .route("/hello2", get(MyServer::hello_world2))
             .route("/form", post(MyServer::form_test))
             .route("/ws", get(MyServer::ws_handler))
             .route("/container/:id/:action", get(MyServer::container_action_handler))
@@ -116,6 +117,12 @@ impl MyServer {
         let name = &body_data.name;
         let age = &body_data.age;
         let msg = format!("Hi, {name} you are {age} years old.");
+        let return_msg = ResponseMessage{message: String::from(msg)};
+        Json(json!(return_msg))
+    }
+
+    async fn hello_world2() -> Json<Value> {
+        let msg = format!("Funcionou");
         let return_msg = ResponseMessage{message: String::from(msg)};
         Json(json!(return_msg))
     }
