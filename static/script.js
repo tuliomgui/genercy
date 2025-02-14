@@ -81,7 +81,8 @@ function getSeverityIcon(severity) {
     }
 }
 
-function handleImageDeletion(event) {
+function handleImageDeletion(event, element) {
+    console.log("Elemento: %o", element);
     if (event.detail.successful) {
         let jsonResp = JSON.parse(event.detail.xhr.response)
         addToast(jsonResp.message, jsonResp.success ? 'success' : 'error');
@@ -118,16 +119,9 @@ function openModal(modalData, afterReqFunc) {
     modalButton.textContent = modalData.buttonText;
     modalButton.classList.remove('btn-primary', 'btn-danger', 'btn-success');
     modalButton.classList.add(modalData.buttonClass);
-    //modalButton.dataset.hxDelete = modalData.reqUrl;
-    modalButton.dataset.hxGet = "/hello2";
+    modalButton.dataset.hxDelete = modalData.reqUrl;
     modalButton.dataset.hxSwap = 'none';
-    modalButton.setAttribute('hx-on:htmx:after-request', afterReqFunc.name + '(event)');
+    modalButton.setAttribute('hx-on:htmx:after-request', afterReqFunc.name + '(event, this)');
     htmx.process(modal);
     (new bootstrap.Modal(modal)).show();
-}
-
-function tempTeste(event) {
-    console.log('Evento: ', event);
-    let jsonResp = JSON.parse(event.detail.xhr.response)
-    console.log("Mensagem: ", jsonResp.message);
 }
